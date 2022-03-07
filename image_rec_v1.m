@@ -1,4 +1,4 @@
-function [imgOUT, imgSSIM, imgSNR, imgDE] = image_rec_v1(fileName, database, smallCellSize, n)
+function [imgOUT, imgSSIM, imgSNR, imgDE] = image_rec_v1(fileName, database, meanDatabase, smallCellSize, n)
 %
 % This function was created by:
 % Jimmy Cedervall Lamin (jimla401)
@@ -61,7 +61,7 @@ siz = int16(smallCellSize*imgOUTscale);
 %siz = int16(siz(1));
 
 % create image reference to later be used
-imgREF = zeros(smallCellSize,smallCellSize,3);
+imgREF = zeros(smallCellSize*imgOUTscale,smallCellSize*imgOUTscale,3);
 
 tic;
 

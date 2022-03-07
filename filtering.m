@@ -59,13 +59,14 @@ end
 
 meanSmallDB = zeros(3,size(smallDatabase,2));
 for i=1:size(smallDatabase,2)
-    matSmallImg = cell2mat(smallDatabase(1,i));
+    matSmallImg = rgb2lab(cell2mat(smallDatabase(1,i)));    
     
     meanSmallDB(1,i) = mean(mean(matSmallImg(:,:,1)));
     meanSmallDB(2,i) = mean(mean(matSmallImg(:,:,2)));
     meanSmallDB(3,i) = mean(mean(matSmallImg(:,:,3)));
     
-    resized = imresize(matSmallImg,[tinyImgSize tinyImgSize]);
+    
+    resized = imresize(cell2mat(smallDatabase(1,i)),[tinyImgSize tinyImgSize]);
     smallDatabase(1,i) = mat2cell(resized,tinyImgSize);
 end
 
