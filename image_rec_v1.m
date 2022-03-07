@@ -165,7 +165,7 @@ imgDE = mean(mean(sqrt( (imgOUT(:,:,1) - img(:,:,1)).^2 + (imgOUT(:,:,2) - img(:
 disp(strcat('SSIM:', sprintf('%.6f',imgSSIM)));
 disp(strcat('SNR:', sprintf('%.6f',imgSNR)));
 disp(strcat('DELTA E:', sprintf('%.6f',imgDE)));
-disp(strcat('Elapsed time', elapsedTime));
+disp(strcat('Elapsed time', int2str(elapsedTime)));
 
 end
 
