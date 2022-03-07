@@ -63,7 +63,7 @@ siz = int16(smallCellSize*imgOUTscale);
 % create image reference to later be used
 imgREF = zeros(smallCellSize*imgOUTscale,smallCellSize*imgOUTscale,3);
 
-tic;
+timerVal = tic;
 
 progress = 1;
 % for-loop for each "small cell" to create the imgOUT of small images
@@ -134,7 +134,7 @@ for i = 1:size(img,1)/smallCellSize
     end
 end
 
-elapsedTime = toc;
+elapsedTime = toc(timerVal);
 
 % Save final image
 % if n == 1
