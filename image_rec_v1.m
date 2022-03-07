@@ -38,7 +38,7 @@ if mod(size(img,2), smallCellSize) ~= 0
 end
 
 if boolean == 1
-    disp(strcat(('Image dimensions are not divisible by:'), int2str(smallCellSize)));
+    disp(strcat(('Image dimensions are not divisible by: '), int2str(smallCellSize)));
     disp(strcat('The size of the image has been changed to:', strcat((strcat(int2str(size(img,1)),'x'))),int2str(size(img,2))));
     disp('Some information from the original image has therefore been lost');
 end
@@ -127,7 +127,7 @@ for i = 1:size(img,1)/smallCellSize
         
     end
     % Give quick feedback for how long time is left aproximetly
-    if round((size(img,1)/smallCellSize) * progress / 10)  == i
+    if round((size(img,1)/smallCellSize) * progress / 20)  == i
         progress = progress + 1;
         disp(strcat('Image is processing...', int2str((progress - 1) * 10), '%'));
     end
@@ -158,13 +158,13 @@ imgOUT = rgb2lab(imgOUT);
 imgDE = mean(mean(sqrt( (imgOUT(:,:,1) - img(:,:,1)).^2 + (imgOUT(:,:,2) - img(:,:,2)).^2 + (imgOUT(:,:,3) - img(:,:,3)).^2)));
 
 % Elapsed time to min
-elapsedTime = elapsedTime / 60;
+
 
 % print information
 disp(strcat('SSIM:', sprintf('%.6f',imgSSIM)));
 disp(strcat('SNR:', sprintf('%.6f',imgSNR)));
 disp(strcat('DELTA E:', sprintf('%.6f',imgDE)));
-disp(strcat('Elapsed time', toc));
+disp(strcat('Elapsed time', elapsedTime));
 
 end
 
