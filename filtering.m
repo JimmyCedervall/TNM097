@@ -4,17 +4,16 @@ function [smallDatabase,meanSmallDB] = filtering(numberOfCluster,clusterSize,tin
 addpath('databas')
 allSize = 7128;
 database = cell(1,allSize);
-% numberOfCluster = 25;
-% clusterSize = 4;
 
+%add to database
 for i = 1:size(database,2)
     fileName = strcat(int2str(i),'.jpg');
     img = im2double(imread(fileName));
     database{i} = img;
 end
 
+%idx is which cluster each number belongs to
 allChannels = zeros(3,allSize);
-
 for i = 1:allSize
     fileName = strcat(int2str(i),'.jpg');
     img = im2double(imread(fileName));
@@ -45,47 +44,42 @@ for row = 1:allSize
         end
     end
 end
-tempDB = cell(1,clusterSize);
-for i = 1:numberOfCluster
-    tempDB = cellOfCluster(i,(1:clusterSize));
-    for j = 1:clusterSize
-        if (isempty(tempDB(1,j)))
-            cellOfCluster(i:j) = database(1, randi([1 allSize]));
-        end
-    end
-end
 
+%from cellOfCluster to smallDatabase
 for i = 1:numberOfCluster
     smallDatabase(1,(i-1)*clusterSize+1:(i-1)*clusterSize+clusterSize) = cellOfCluster(i,1:clusterSize);
 end
-  
+
+%rezise images in smallDatabase
 for i=1:size(smallDatabase,2)
     test=cell2mat(smallDatabase(1,i));
     [a,b,c] = size(test);
-        if c > 1  
-            resized = imresize(cell2mat(smallDatabase(1,i)),[tinyImgSize tinyImgSize]);
-            smallDatabase(1,i) = mat2cell(resized,tinyImgSize); 
-        end
+    if c > 2  
+        resized = imresize(cell2mat(smallDatabase(1,i)),[tinyImgSize tinyImgSize]);
+        smallDatabase(1,i) = mat2cell(resized,tinyImgSize); 
+    end
 end
+
+%remove the empty cells
 smallDatabase = smallDatabase(~cellfun('isempty',smallDatabase));
 
+%create the mean of small database
 meanSmallDB = zeros(3,size(smallDatabase,2));
-
 for i=1:size(smallDatabase,2)
-    matSmallImg = rgb2lab(cell2mat(smallDatabase(1,i)));
+    matSmallImg = rgb2lab(cell2mat(smallDatabase(1,i)));   
+     
     meanSmallDB(1,i) = mean(mean(matSmallImg(:,:,1)));
     meanSmallDB(2,i) = mean(mean(matSmallImg(:,:,2)));
     meanSmallDB(3,i) = mean(mean(matSmallImg(:,:,3)));
 end
 
-
 disp(strcat(strcat('Database has been created containing:', int2str(size(smallDatabase,2))),' images'));
 
-for i=1:size(smallDatabase,2)
-    imgTEMP = cell2mat(smallDatabase(1,i));
-    nameOfFile=strcat(string(i),".jpg");
-    path = strcat("databaseNew/",nameOfFile);
-    imwrite(imgTEMP,path);    
-end
+% for i=1:size(smallDatabase,2)
+%     imgTEMP = cell2mat(smallDatabase(1,i));
+%     nameOfFile=strcat(string(i),".jpg");
+%     path = strcat("databaseNew/",nameOfFile);
+%     imwrite(imgTEMP,path);    
+% end
 end
 
