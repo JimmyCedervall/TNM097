@@ -159,33 +159,38 @@ elapsedTime = toc(timerVal);
 imwrite(imgOUT, strcat('final_N', int2str(n), '_A', int2str(size(database,2)), fileName));
 
 %%%%%%%%% Objektiva kvalitetsmått
-
+imgOUTtemp = imgOUT;
 % SSIM
-imgOUT = imresize(imgOUT,[(size(img,1)) (size(img,2))]);
-imgSSIM = ssim(double(img), double(imgOUT));
+imgOUTtemp = imresize(imgOUTtemp,[(size(img,1)) (size(img,2))]);
+imgSSIM = ssim(double(img), double(imgOUTtemp));
 
 % SNR
-imgSNR = mysnr(double(img), double(img) - double(imgOUT));
+imgSNR = mysnr(double(img), double(img) - double(imgOUTtemp));
 
-% DELTA E spacial cielab
-%img = rgb2lab(img);
-%imgOUT = rgb2lab(imgOUT);
-%imgDE = mean(mean(sqrt( (img(:,:,1) - imgOUT(:,:,1)).^2 + (img(:,:,2) - imgOUT(:,:,2)).^2 + (img(:,:,3) - imgOUT(:,:,3)).^2)));
+% DELTA E
+imgOUTde = rgb2lab(imgOUTtemp);
+imgDE = sqrt((img(:,:,1) - imgOUTde(:,:,1)).^2 + (img(:,:,2) - imgOUTde(:,:,2)).^2 + (img(:,:,3) - imgOUTde(:,:,3)).^2);
+imgDE = mean(mean(imgDE));
 
 % SCIELAB computation
-imgscielab = rgb2xyz(img);
-imgOUTscielab = rgb2xyz(imgOUT);
+imgXYZ = rgb2xyz(img);
+imgOUTxyz = rgb2xyz(imgOUTtemp);
 whitePoint = [95.05 100 108.9];
 sampDegree = 72 * 30 * 0.0175;
-imgDE = scielab(sampDegree, imgscielab, imgOUTscielab, whitePoint, 'xyz');
+imgSCIELAB = scielab(sampDegree, imgXYZ, imgOUTxyz, whitePoint, 'xyz');
+imgSCIELAB = mean(mean(imgSCIELAB));
 
 % print information
-disp(strcat('SSIM:', sprintf('%.6f',imgSSIM)));
-disp(strcat('SNR:', sprintf('%.6f',imgSNR)));
-disp(strcat('DELTA E:', sprintf('%.6f',imgDE)));
-disp(strcat(strcat('Elapsed time:', int2str(elapsedTime)/60), '-min'));
+disp(strcat('SSIM:', sprintf('%.4f',imgSSIM)));
+disp(strcat('SNR:', sprintf('%.4f',imgSNR)));
+disp(strcat('DELTA E:', sprintf('%.4f',imgDE)));
+disp(strcat('DELTA E (scielab):', sprintf('%.4f',imgSCIELAB)));
 
-imgOUT = lab2rgb(imgOUT);
+if elapsedTime < 60
+    disp(strcat(strcat('Elapsed time:', int2str(elapsedTime)), '-sec'));
+else
+    disp(strcat(strcat('Elapsed time:', int2str(elapsedTime/60)), '-min'));
+end
 
 end
 
