@@ -16,7 +16,7 @@ function [imgOUT, imgSSIM, imgSNR, imgDE] = image_rec_v1(fileName, database, sma
 
 % Make image double
 img = im2double(imread(fileName));
-
+img = imresize(img, 0.5);
 % the size of the sectioning of the image, prefferable of size 8 but is
 % interchangable
 %smallCellSize = 128;
@@ -128,16 +128,17 @@ for i = 1:size(img,1)/smallCellSize
     end
 end
 
-toc;
+elapsedTime = toc;
 
 % Save final image
-if n == 1
-    imwrite(imgOUT, strcat('recreated_noSSIM_', fileName));
-else
-    imwrite(imgOUT, strcat('recreated_', fileName));
-end
+% if n == 1
+%     imwrite(imgOUT, strcat('final_', n, '_', fileName));
+% else
+%     imwrite(imgOUT, strcat('final_', n, '_', fileName));
+% end
+imwrite(imgOUT, strcat('final_', n, '_', fileName));
 
-% Objektiva kvalitetsmått
+%%%%%%%%% Objektiva kvalitetsmått
 
 % SSIM
 imgOUT = imresize(imgOUT,[(size(img,1)),(size(img,2))]);
@@ -151,8 +152,7 @@ img = rgb2lab(img);
 imgOUT = rgb2lab(imgOUT);
 imgDE = mean(mean(sqrt( (imgOUT(:,:,1) - img(:,:,1)).^2 + (imgOUT(:,:,2) - img(:,:,2)).^2 + (imgOUT(:,:,3) - img(:,:,3)).^2)));
 
-% Elapsed time
-elapsedTime = toc;
+% Elapsed time to min
 elapsedTime = elapsedTime / 60;
 
 % print information
