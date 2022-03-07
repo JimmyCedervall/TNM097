@@ -186,6 +186,17 @@ disp(strcat('SNR:', sprintf('%.4f',imgSNR)));
 disp(strcat('DELTA E:', sprintf('%.4f',imgDE)));
 disp(strcat('DELTA E (scielab):', sprintf('%.4f',imgSCIELAB)));
 
+[MSE,PSNR,AD,SC,NK,MD,LMSE,NAE] = iq_measures(img,imgOUT);
+
+disp(strcat('MSE:', sprintf('%.4f',MSE)));
+disp(strcat('PSNR:', sprintf('%.4f',PSNR)));
+disp(strcat('AD:', sprintf('%.4f',AD)));
+disp(strcat('SC:', sprintf('%.4f',SC)));
+disp(strcat('NK,:', sprintf('%.4f',NK)));
+disp(strcat('MD:', sprintf('%.4f',MD)));
+disp(strcat('LMSE:', sprintf('%.4f',LMSE)));
+disp(strcat('NAE:', sprintf('%.4f',NAE)));
+
 if elapsedTime < 60
     disp(strcat(strcat('Elapsed time:', int2str(elapsedTime)), '-sec'));
 else
