@@ -21,10 +21,10 @@ img = im2double(img);
 
 % the size of the sectioning of the image, prefferable of size 8 but is
 % interchangable
-smallCellSize = 8;
+smallCellSize = 128;
 
 % number of optimal images from deltaE
-n = 5;
+n = 2;
 
 boolean = 0;
 
@@ -41,9 +41,9 @@ if mod(size(img,2), smallCellSize) ~= 0
 end
 
 if boolean == 1
-    disp(strcat('Image dimensions are not divisible by '), int2str(smallCellSize));
-    disp(strcat('The size of the image has been changed to ', int2str(size(img))));
-    disp('Some information from the original image has therefor been lost');
+    disp(strcat(('Image dimensions are not divisible by: '), int2str(smallCellSize)));
+    disp(strcat('The size of the image has been changed to: ', strcat((strcat(int2str(size(img,1)),'x'))),int2str(size(img,2))));
+    disp('Some information from the original image has therefore been lost');
 end
 
 % rgb till lab
@@ -56,10 +56,10 @@ imgTiles = mat2tiles(img, [smallCellSize,smallCellSize]);
 imgOUTscale = 3;
 
 % final image matrix
-imgOUT = zeros(size(img,1)*3,size(img,2)*imgOUTscale,3);
+imgOUT = zeros(size(img,1)*imgOUTscale,size(img,2)*imgOUTscale,3);
 
 % går att göra dessa två rader finare
-siz = int8(smallCellSize*imgOUTscale);
+siz = int16(smallCellSize*imgOUTscale);
 %siz = int16(siz(1));
 
 % create image reference to later be used
@@ -135,6 +135,10 @@ imgSNR = mysnr(img, img - imgOUT);
 img = rgb2lab(img);
 imgOUT = rgb2lab(imgOUT);
 imgDE = mean(mean(sqrt( (imgOUT(:,:,1) - img(:,:,1)).^2 + (imgOUT(:,:,2) - img(:,:,2)).^2 + (imgOUT(:,:,3) - img(:,:,3)).^2)));
+
+disp(strcat('SSIM:', sprintf('%.6f',imgSSIM)));
+disp(strcat('SNR:', sprintf('%.6f',imgSNR)));
+disp(strcat('DELTA E:', sprintf('%.6f',imgDE)));
 
 end
 
