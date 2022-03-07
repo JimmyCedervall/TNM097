@@ -1,4 +1,4 @@
-function [imgOUT, imgSSIM, imgSNR, imgDE] = image_rec_v1(img, database)
+function [imgOUT, imgSSIM, imgSNR, imgDE] = image_rec_v1(img, database, smallCellSize, n)
 %
 % This function was created by:
 % Jimmy Cedervall Lamin (jimla401)
@@ -21,10 +21,10 @@ img = im2double(img);
 
 % the size of the sectioning of the image, prefferable of size 8 but is
 % interchangable
-smallCellSize = 128;
+%smallCellSize = 128;
 
 % number of optimal images from deltaE
-n = 2;
+%n = 2;
 
 boolean = 0;
 
