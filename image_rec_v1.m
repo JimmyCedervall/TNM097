@@ -16,7 +16,6 @@ function [imgOUT, imgSSIM, imgSNR, imgDE] = image_rec_v1(fileName, database, mea
 
 % Make image double
 img = im2double(imread(fileName));
-img = imresize(img, 0.5);
 % the size of the sectioning of the image, prefferable of size 8 but is
 % interchangable
 %smallCellSize = 128;
@@ -83,12 +82,10 @@ for i = 1:size(img,1)/smallCellSize
                      
             % calculating delta E values for all images
             %dE(1,k) = mean(mean(sqrt( (imgTEMP(:,:,1) - imageMatrix(:,:,1)).^2 + (imgTEMP(:,:,2) - imageMatrix(:,:,2)).^2 + (imgTEMP(:,:,3) - imageMatrix(:,:,3)).^2)));
-            databaseL = meanDatabase(1,k);
-            databaseA = meanDatabase(2,k);
-            databaseB = meanDatabase(3,k);
-            L = databaseL - mean(mean(imageMatrix(:,:,1)))^2;
-            A = databaseA - mean(mean(imageMatrix(:,:,2)))^2;
-            B = databaseB - mean(mean(imageMatrix(:,:,3)))^2;
+
+            L = (meanDatabase(1,k) - mean(mean(imageMatrix(:,:,1))))^2;
+            A = (meanDatabase(2,k) - mean(mean(imageMatrix(:,:,2))))^2;
+            B = (meanDatabase(3,k) - mean(mean(imageMatrix(:,:,3))))^2;
             dE(1,k) = (sqrt(L + A + B));
         end
                       
