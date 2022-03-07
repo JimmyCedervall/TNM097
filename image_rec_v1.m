@@ -151,28 +151,15 @@ img = rgb2lab(img);
 imgOUT = rgb2lab(imgOUT);
 imgDE = mean(mean(sqrt( (imgOUT(:,:,1) - img(:,:,1)).^2 + (imgOUT(:,:,2) - img(:,:,2)).^2 + (imgOUT(:,:,3) - img(:,:,3)).^2)));
 
-% print information
-% disp(strcat('SSIM:', sprintf('%.6f',imgSSIM)));
-% disp(strcat('SNR:', sprintf('%.6f',imgSNR)));
-% disp(strcat('DELTA E:', sprintf('%.6f',imgDE)));
-
-% round information
-imgSSIM = sprintf('%.6f',imgSSIM);
-imgSNR = sprintf('%.6f',imgSNR);
-imgDE = sprintf('%.6f',imgDE);
+% Elapsed time
 elapsedTime = toc;
 elapsedTime = elapsedTime / 60;
 
-% save all values to file
-if n == 1
-    save(strcat('recreated_noSSIM', fileName, '_values.txt'), strcat('SSIM:', 'imgSSIM'), strcat('SNR:','imgSNR'), strcat('Delta E:','imgDE'), strcat('Elapsed Time:','elapsedTime', 'min'), '-ascii');
-    % type out the contect to show
-    type(strcat('recreated_noSSIM', fileName, '_values.txt'));
-else
-    save(strcat('recreated_', fileName, '_values.txt'), strcat('SSIM:', 'imgSSIM'), strcat('SNR:','imgSNR'), strcat('Delta E:','imgDE'), strcat('Elapsed Time:','elapsedTime', 'min'), '-ascii');
-    % type out the contect to show
-    type(strcat('recreated_', fileName, '_values.txt'));
-end
+% print information
+disp(strcat('SSIM:', sprintf('%.6f',imgSSIM)));
+disp(strcat('SNR:', sprintf('%.6f',imgSNR)));
+disp(strcat('DELTA E:', sprintf('%.6f',imgDE)));
+disp(strcat('Elapsed time', elapsedTime));
 
 end
 
