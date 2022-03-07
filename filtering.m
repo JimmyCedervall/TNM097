@@ -21,6 +21,8 @@ for i = 1:allSize
     allChannels(1,i) = mean(mean(img(:, :, 1)));
     allChannels(2,i) = mean(mean(img(:, :, 2)));
     allChannels(3,i) = mean(mean(img(:, :, 3)));
+    
+    
 end
 X = allChannels';
 [idx,C] = kmeans(X,numberOfCluster);
@@ -56,27 +58,34 @@ end
 for i = 1:numberOfCluster
     smallDatabase(1,(i-1)*clusterSize+1:(i-1)*clusterSize+clusterSize) = cellOfCluster(i,1:clusterSize);
 end
+  
+for i=1:size(smallDatabase,2)
+    test=cell2mat(smallDatabase(1,i));
+    [a,b,c] = size(test);
+        if c > 1  
+            resized = imresize(cell2mat(smallDatabase(1,i)),[tinyImgSize tinyImgSize]);
+            smallDatabase(1,i) = mat2cell(resized,tinyImgSize); 
+        end
+end
+smallDatabase = smallDatabase(~cellfun('isempty',smallDatabase));
 
 meanSmallDB = zeros(3,size(smallDatabase,2));
+
 for i=1:size(smallDatabase,2)
-    matSmallImg = rgb2lab(cell2mat(smallDatabase(1,i)));    
-    
+    matSmallImg = rgb2lab(cell2mat(smallDatabase(1,i)));
     meanSmallDB(1,i) = mean(mean(matSmallImg(:,:,1)));
     meanSmallDB(2,i) = mean(mean(matSmallImg(:,:,2)));
     meanSmallDB(3,i) = mean(mean(matSmallImg(:,:,3)));
-    
-    
-    resized = imresize(cell2mat(smallDatabase(1,i)),[tinyImgSize tinyImgSize]);
-    smallDatabase(1,i) = mat2cell(resized,tinyImgSize);
 end
+
 
 disp(strcat(strcat('Database has been created containing:', int2str(size(smallDatabase,2))),' images'));
 
-% for i=1:size(smallDatabase,2)
-%     imgTEMP = cell2mat(smallDatabase(1,i));
-%     nameOfFile=strcat(string(i),".jpg");
-%     path = strcat("databaseNew/",nameOfFile);
-%     imwrite(imgTEMP,path);    
-% end
+for i=1:size(smallDatabase,2)
+    imgTEMP = cell2mat(smallDatabase(1,i));
+    nameOfFile=strcat(string(i),".jpg");
+    path = strcat("databaseNew/",nameOfFile);
+    imwrite(imgTEMP,path);    
+end
 end
 
