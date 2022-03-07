@@ -1,11 +1,10 @@
-function [smallDatabase] = filtering(numberOfCluster,clusterSize,tinyImgSize)
 %https://www.mathworks.com/content/dam/mathworks/tag-team/Objects/c/88360_93001v00_Color-Based_Seg_K-Means_Clustering_2016.pdf
 
 addpath('databas')
 allSize = 7128;
 database = cell(1,allSize);
-% numberOfCluster = 25;
-% clusterSize = 4;
+numberOfCluster = 25;
+clusterSize = 4;
 
 for i = 1:size(database,2)
     fileName = strcat(int2str(i),'.jpg');
@@ -58,7 +57,7 @@ for i = 1:numberOfCluster
 end
 
 for i=1:size(smallDatabase,2)
-    smallDatabase(1,i) = imresize(smallDatabase(1,i),[tinyImgSize,tinyImgSize]);
+    smallDatabase(1,i) = imresize(smallDatabase(1,i),[smallCellSize,smallCellSize]);
 end
 
 % for i=1:size(smallDatabase,2)
@@ -67,5 +66,3 @@ end
 %     path = strcat("databaseNew/",nameOfFile);
 %     imwrite(imgTEMP,path);    
 % end
-end
-
