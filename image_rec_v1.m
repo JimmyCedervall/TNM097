@@ -77,12 +77,19 @@ for i = 1:size(img,1)/smallCellSize
         dE = zeros(1,size(database,2));
         for k = 1:size(database,2)
             % Temporary image created from database
-            imgTEMP = cell2mat(database(k));
-            imgTEMP = imresize(imgTEMP,[smallCellSize,smallCellSize]);
-            imgTEMP = rgb2lab(imgTEMP);
-            
+            %imgTEMP = cell2mat(database(k));
+            %imgTEMP = imresize(imgTEMP,[smallCellSize,smallCellSize]);
+            %imgTEMP = rgb2lab(imgTEMP);
+                     
             % calculating delta E values for all images
-            dE(1,k) = mean(mean(sqrt( (imgTEMP(:,:,1) - imageMatrix(:,:,1)).^2 + (imgTEMP(:,:,2) - imageMatrix(:,:,2)).^2 + (imgTEMP(:,:,3) - imageMatrix(:,:,3)).^2)));
+            %dE(1,k) = mean(mean(sqrt( (imgTEMP(:,:,1) - imageMatrix(:,:,1)).^2 + (imgTEMP(:,:,2) - imageMatrix(:,:,2)).^2 + (imgTEMP(:,:,3) - imageMatrix(:,:,3)).^2)));
+            databaseL = meanDatabase(1,k);
+            databaseA = meanDatabase(2,k);
+            databaseB = meanDatabase(3,k);
+            L = databaseL - mean(mean(imageMatrix(:,:,1)))^2;
+            A = databaseA - mean(mean(imageMatrix(:,:,2)))^2;
+            B = databaseB - mean(mean(imageMatrix(:,:,3)))^2;
+            dE(1,k) = (sqrt(L + A + B));
         end
                       
         % array for the 'n' best values
@@ -104,10 +111,11 @@ for i = 1:size(img,1)/smallCellSize
             end
         end
                 
-        % go through the best matches and find the ONE best match
+        % go through the best matches and find THE best match
         ref = 0;
         for k = 1:size(bestMatches,2)
-            tinyRef = imresize(cell2mat(bestMatches(k)), [smallCellSize*imgOUTscale, smallCellSize*imgOUTscale]);
+            %tinyRef = imresize(cell2mat(bestMatches(k)), [smallCellSize*imgOUTscale, smallCellSize*imgOUTscale]);
+            tinyRef = cell2mat(bestMatches(k));
             value = ssim(imresize(lab2rgb(imageMatrix), imgOUTscale), tinyRef);
                          
             % compare each match to find the best one
@@ -121,7 +129,7 @@ for i = 1:size(img,1)/smallCellSize
         imgOUT(i*siz - siz+1 : i*siz, j*siz - siz+1 : j*siz,:) = imgREF;
         
     end
-    % Give quick feedback for how long time is left
+    % Give quick feedback for how long time is left aproximetly
     if (size(img,1)/smallCellSize) * progress / 10  == i
         progress = progress + 1;
         disp(strcat('Image is processing...', int2str((progress - 1) * 10), '%'));
@@ -136,7 +144,7 @@ elapsedTime = toc;
 % else
 %     imwrite(imgOUT, strcat('final_', n, '_', fileName));
 % end
-imwrite(imgOUT, strcat('final_', n, '_', fileName));
+imwrite(imgOUT, strcat('final_N', int2str(n), '_', fileName));
 
 %%%%%%%%% Objektiva kvalitetsmått
 
@@ -147,7 +155,7 @@ imgSSIM = ssim(img, imgOUT);
 % SNR
 imgSNR = mysnr(img, img - imgOUT);
 
-% DELTA E
+% DELTA E spacial cielab
 img = rgb2lab(img);
 imgOUT = rgb2lab(imgOUT);
 imgDE = mean(mean(sqrt( (imgOUT(:,:,1) - img(:,:,1)).^2 + (imgOUT(:,:,2) - img(:,:,2)).^2 + (imgOUT(:,:,3) - img(:,:,3)).^2)));
