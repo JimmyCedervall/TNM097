@@ -16,7 +16,7 @@ function [imgOUT, imgSSIM, imgSNR, imgDE] = image_rec_v1(fileName, database, sma
 
 % Make image double
 img = im2double(imread(fileName));
-
+img = imresize(img, 0.5);
 % the size of the sectioning of the image, prefferable of size 8 but is
 % interchangable
 %smallCellSize = 128;
@@ -128,16 +128,17 @@ for i = 1:size(img,1)/smallCellSize
     end
 end
 
-toc;
+elapsedTime = toc;
 
 % Save final image
-if n == 1
-    imwrite(imgOUT, strcat('recreated_noSSIM_', fileName));
-else
-    imwrite(imgOUT, strcat('recreated_', fileName));
-end
+% if n == 1
+%     imwrite(imgOUT, strcat('final_', n, '_', fileName));
+% else
+%     imwrite(imgOUT, strcat('final_', n, '_', fileName));
+% end
+imwrite(imgOUT, strcat('final_', n, '_', fileName));
 
-% Objektiva kvalitetsmått
+%%%%%%%%% Objektiva kvalitetsmått
 
 % SSIM
 imgOUT = imresize(imgOUT,[(size(img,1)),(size(img,2))]);
@@ -151,28 +152,14 @@ img = rgb2lab(img);
 imgOUT = rgb2lab(imgOUT);
 imgDE = mean(mean(sqrt( (imgOUT(:,:,1) - img(:,:,1)).^2 + (imgOUT(:,:,2) - img(:,:,2)).^2 + (imgOUT(:,:,3) - img(:,:,3)).^2)));
 
-% print information
-% disp(strcat('SSIM:', sprintf('%.6f',imgSSIM)));
-% disp(strcat('SNR:', sprintf('%.6f',imgSNR)));
-% disp(strcat('DELTA E:', sprintf('%.6f',imgDE)));
-
-% round information
-imgSSIM = sprintf('%.6f',imgSSIM);
-imgSNR = sprintf('%.6f',imgSNR);
-imgDE = sprintf('%.6f',imgDE);
-elapsedTime = toc;
+% Elapsed time to min
 elapsedTime = elapsedTime / 60;
 
-% save all values to file
-if n == 1
-    save(strcat('recreated_noSSIM', fileName, '_values.txt'), strcat('SSIM:', 'imgSSIM'), strcat('SNR:','imgSNR'), strcat('Delta E:','imgDE'), strcat('Elapsed Time:','elapsedTime', 'min'), '-ascii');
-    % type out the contect to show
-    type(strcat('recreated_noSSIM', fileName, '_values.txt'));
-else
-    save(strcat('recreated_', fileName, '_values.txt'), strcat('SSIM:', 'imgSSIM'), strcat('SNR:','imgSNR'), strcat('Delta E:','imgDE'), strcat('Elapsed Time:','elapsedTime', 'min'), '-ascii');
-    % type out the contect to show
-    type(strcat('recreated_', fileName, '_values.txt'));
-end
+% print information
+disp(strcat('SSIM:', sprintf('%.6f',imgSSIM)));
+disp(strcat('SNR:', sprintf('%.6f',imgSNR)));
+disp(strcat('DELTA E:', sprintf('%.6f',imgDE)));
+disp(strcat('Elapsed time', elapsedTime));
 
 end
 
