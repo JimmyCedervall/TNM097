@@ -70,7 +70,7 @@ for i=1:size(smallDatabase,2)
     smallDatabase(1,i) = mat2cell(resized,tinyImgSize);
 end
 
-disp(strcat(strcat('Database has been created containing:', int2str(size(smallDatabase,2)))),' images');
+disp(strcat(strcat('Database has been created containing:', int2str(size(smallDatabase,2))),' images'));
 
 % for i=1:size(smallDatabase,2)
 %     imgTEMP = cell2mat(smallDatabase(1,i));
