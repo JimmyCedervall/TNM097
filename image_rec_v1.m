@@ -128,10 +128,24 @@ for i = 1:size(img,1)/smallCellSize
         
     end
     % Give quick feedback for how long time is left aproximetly
-    if round((size(img,1)/smallCellSize) * progress / 20)  == i
-        progress = progress + 1;
-        disp(strcat('Image is processing...', int2str((progress - 1) * 5), '%'));
+    check = size(img,1) * size(img,2);
+    if check > 5000000
+        if round((size(img,1)/smallCellSize) * progress / 100)  == i
+            progress = progress + 1;
+            disp(strcat('Image is processing...', int2str((progress - 1) * 1), '%'));
+        end
+    elseif check > 2000000
+        if round((size(img,1)/smallCellSize) * progress / 20)  == i
+            progress = progress + 1;
+            disp(strcat('Image is processing...', int2str((progress - 1) * 5), '%'));
+        end
+    else
+        if round((size(img,1)/smallCellSize) * progress / 10)  == i
+            progress = progress + 1;
+            disp(strcat('Image is processing...', int2str((progress - 1) * 10), '%'));
+        end
     end
+    
 end
 
 elapsedTime = toc(timerVal);

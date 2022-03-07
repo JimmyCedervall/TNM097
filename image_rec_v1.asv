@@ -128,6 +128,14 @@ for i = 1:size(img,1)/smallCellSize
         
     end
     % Give quick feedback for how long time is left aproximetly
+    if size(img,1) * size(img,2) > 
+        
+    elseif
+        
+    else
+        
+    end
+    
     if round((size(img,1)/smallCellSize) * progress / 20)  == i
         progress = progress + 1;
         disp(strcat('Image is processing...', int2str((progress - 1) * 5), '%'));
@@ -154,12 +162,16 @@ imgSSIM = ssim(double(img), double(imgOUT));
 imgSNR = mysnr(double(img), double(img) - double(imgOUT));
 
 % DELTA E spacial cielab
-img = rgb2lab(img);
-imgOUT = rgb2lab(imgOUT);
-imgDE = mean(mean(sqrt( (img(:,:,1) - imgOUT(:,:,1)).^2 + (img(:,:,2) - imgOUT(:,:,2)).^2 + (img(:,:,3) - imgOUT(:,:,3)).^2)));
+%img = rgb2lab(img);
+%imgOUT = rgb2lab(imgOUT);
+%imgDE = mean(mean(sqrt( (img(:,:,1) - imgOUT(:,:,1)).^2 + (img(:,:,2) - imgOUT(:,:,2)).^2 + (img(:,:,3) - imgOUT(:,:,3)).^2)));
 
 % SCIELAB computation
-imgSCIELAB = scielab(X, img, imgOUT, )
+img = rgb2xyz(img);
+imgOUT = rgb2xyz(imgOUT);
+whitePoint = [95.05 100 108.9];
+sampDegree = 72 * 30 * 0.0175;
+imgDE = scielab(sampDegree, img, imgOUT, whitePoint, 'xyz');
 
 % print information
 disp(strcat('SSIM:', sprintf('%.6f',imgSSIM)));
