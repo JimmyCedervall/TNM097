@@ -49,7 +49,8 @@ img = rgb2lab(double(img));
 % create cells from the original img
 imgTiles = mat2tiles(img, [smallCellSize,smallCellSize]);
 
-% imgOUT scale factor
+% imgOUT scale factor.
+% Factor of 3 results in an output image of 3 times the size
 imgOUTscale = 3;
 
 % final image matrix
