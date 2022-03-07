@@ -173,17 +173,19 @@ imgSNR = mysnr(double(img), double(img) - double(imgOUT));
 %imgDE = mean(mean(sqrt( (img(:,:,1) - imgOUT(:,:,1)).^2 + (img(:,:,2) - imgOUT(:,:,2)).^2 + (img(:,:,3) - imgOUT(:,:,3)).^2)));
 
 % SCIELAB computation
-img = rgb2xyz(img);
-imgOUT = rgb2xyz(imgOUT);
+imgscielab = rgb2xyz(img);
+imgOUTscielab = rgb2xyz(imgOUT);
 whitePoint = [95.05 100 108.9];
 sampDegree = 72 * 30 * 0.0175;
-imgDE = scielab(sampDegree, img, imgOUT, whitePoint, 'xyz');
+imgDE = scielab(sampDegree, imgscielab, imgOUTscielab, whitePoint, 'xyz');
 
 % print information
 disp(strcat('SSIM:', sprintf('%.6f',imgSSIM)));
 disp(strcat('SNR:', sprintf('%.6f',imgSNR)));
 disp(strcat('DELTA E:', sprintf('%.6f',imgDE)));
 disp(strcat(strcat('Elapsed time:', int2str(elapsedTime)/60), '-min'));
+
+imgOUT = lab2rgb(imgOUT);
 
 end
 
