@@ -14,8 +14,6 @@ function [imgOUT, imgSSIM, imgSNR, imgDE] = image_rec_v1(fileName, database, sma
 % * imgSSIM is the SSIM value when comparing imgOUT with img
 % * imgDE is the delta E value between imgOUT and img
 
-
-
 % Make image double
 img = im2double(imread(fileName));
 
@@ -41,8 +39,8 @@ if mod(size(img,2), smallCellSize) ~= 0
 end
 
 if boolean == 1
-    disp(strcat(('Image dimensions are not divisible by: '), int2str(smallCellSize)));
-    disp(strcat('The size of the image has been changed to: ', strcat((strcat(int2str(size(img,1)),'x'))),int2str(size(img,2))));
+    disp(strcat(('Image dimensions are not divisible by:'), int2str(smallCellSize)));
+    disp(strcat('The size of the image has been changed to:', strcat((strcat(int2str(size(img,1)),'x'))),int2str(size(img,2))));
     disp('Some information from the original image has therefore been lost');
 end
 
@@ -64,6 +62,8 @@ siz = int16(smallCellSize*imgOUTscale);
 
 % create image reference to later be used
 imgREF = zeros(smallCellSize,smallCellSize,3);
+
+tic;
 
 progress = 1;
 % for-loop for each "small cell" to create the imgOUT of small images
@@ -124,9 +124,11 @@ for i = 1:size(img,1)/smallCellSize
     % Give quick feedback for how long time is left
     if (size(img,1)/smallCellSize) * progress / 10  == i
         progress = progress + 1;
-        disp(strcat('Image is still processing...', int2str((progress - 1) * 10), '%'));
+        disp(strcat('Image is processing...', int2str((progress - 1) * 10), '%'));
     end
 end
+
+toc;
 
 % Save final image
 if n == 1
@@ -150,17 +152,24 @@ imgOUT = rgb2lab(imgOUT);
 imgDE = mean(mean(sqrt( (imgOUT(:,:,1) - img(:,:,1)).^2 + (imgOUT(:,:,2) - img(:,:,2)).^2 + (imgOUT(:,:,3) - img(:,:,3)).^2)));
 
 % print information
-disp(strcat('SSIM:', sprintf('%.6f',imgSSIM)));
-disp(strcat('SNR:', sprintf('%.6f',imgSNR)));
-disp(strcat('DELTA E:', sprintf('%.6f',imgDE)));
+% disp(strcat('SSIM:', sprintf('%.6f',imgSSIM)));
+% disp(strcat('SNR:', sprintf('%.6f',imgSNR)));
+% disp(strcat('DELTA E:', sprintf('%.6f',imgDE)));
+
+% round information
+imgSSIM = sprintf('%.6f',imgSSIM);
+imgSNR = sprintf('%.6f',imgSNR);
+imgDE = sprintf('%.6f',imgDE);
+elapsedTime = toc;
+elapsedTime = elapsedTime / 60;
 
 % save all values to file
 if n == 1
-    save(strcat('recreated_noSSIM', fileName, '_values.txt'), 'imgSSIM', 'imgSNR', 'imgDE', '-ascii');
+    save(strcat('recreated_noSSIM', fileName, '_values.txt'), strcat('SSIM:', 'imgSSIM'), strcat('SNR:','imgSNR'), strcat('Delta E:','imgDE'), strcat('Elapsed Time:','elapsedTime', 'min'), '-ascii');
     % type out the contect to show
     type(strcat('recreated_noSSIM', fileName, '_values.txt'));
 else
-    save(strcat('recreated_', fileName, '_values.txt'), 'imgSSIM', 'imgSNR', 'imgDE', '-ascii');
+    save(strcat('recreated_', fileName, '_values.txt'), strcat('SSIM:', 'imgSSIM'), strcat('SNR:','imgSNR'), strcat('Delta E:','imgDE'), strcat('Elapsed Time:','elapsedTime', 'min'), '-ascii');
     % type out the contect to show
     type(strcat('recreated_', fileName, '_values.txt'));
 end
