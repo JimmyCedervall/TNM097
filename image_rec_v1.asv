@@ -1,4 +1,4 @@
-function [imgOUT, imgSSIM, imgSNR, imgDE] = image_rec_v1(img, database, smallCellSize, n)
+function [imgOUT, imgSSIM, imgSNR, imgDE] = image_rec_v1(fileName, database, smallCellSize, n)
 %
 % This function was created by:
 % Jimmy Cedervall Lamin (jimla401)
@@ -17,7 +17,7 @@ function [imgOUT, imgSSIM, imgSNR, imgDE] = image_rec_v1(img, database, smallCel
 
 
 % Make image double
-img = im2double(img);
+img = im2double(imread(fileName));
 
 % the size of the sectioning of the image, prefferable of size 8 but is
 % interchangable
@@ -65,7 +65,7 @@ siz = int16(smallCellSize*imgOUTscale);
 % create image reference to later be used
 imgREF = zeros(smallCellSize,smallCellSize,3);
 
-progress = 0;
+progress = 1;
 % for-loop for each "small cell" to create the imgOUT of small images
 for i = 1:size(img,1)/smallCellSize
     for j = 1:size(img,2)/smallCellSize
@@ -116,18 +116,20 @@ for i = 1:size(img,1)/smallCellSize
                 imgREF = tinyRef;
             end
         end
-        
-        
+
         % Add to image
         imgOUT(i*siz - siz+1 : i*siz, j*siz - siz+1 : j*siz,:) = imgREF;
         
     end
     % Give quick feedback for how long time is left
-    if (size(img,1)/smallCellSize) / 10 * progress == i
+    if (size(img,1)/smallCellSize) * progress / 10  == i
         progress = progress + 1;
-        disp(strcat('Image is still processing...', int2str(progress * 10), '%'));
+        disp(strcat('Image is still processing...', int2str(progress - 1 * 10), '%'));
     end
 end
+
+% Save final image
+imwrite(imgOUT, strcat('recreated_', fileName));
 
 % Objektiva kvalitetsmått
 
@@ -143,12 +145,13 @@ img = rgb2lab(img);
 imgOUT = rgb2lab(imgOUT);
 imgDE = mean(mean(sqrt( (imgOUT(:,:,1) - img(:,:,1)).^2 + (imgOUT(:,:,2) - img(:,:,2)).^2 + (imgOUT(:,:,3) - img(:,:,3)).^2)));
 
+% print information
 disp(strcat('SSIM:', sprintf('%.6f',imgSSIM)));
 disp(strcat('SNR:', sprintf('%.6f',imgSNR)));
 disp(strcat('DELTA E:', sprintf('%.6f',imgDE)));
 
-% Save final image
-imwrite(imgOUT, strcat('recreated_', img))
+% save all values to file
+save(strcat('recreated_', fileName, '_values'), )
 
 end
 

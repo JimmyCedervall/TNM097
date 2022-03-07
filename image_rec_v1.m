@@ -124,12 +124,16 @@ for i = 1:size(img,1)/smallCellSize
     % Give quick feedback for how long time is left
     if (size(img,1)/smallCellSize) * progress / 10  == i
         progress = progress + 1;
-        disp(strcat('Image is still processing...', int2str(progress - 1 * 10), '%'));
+        disp(strcat('Image is still processing...', int2str((progress - 1) * 10), '%'));
     end
 end
 
 % Save final image
-imwrite(imgOUT, strcat('recreated_', fileName));
+if n == 1
+    imwrite(imgOUT, strcat('recreated_noSSIM_', fileName));
+else
+    imwrite(imgOUT, strcat('recreated_', fileName));
+end
 
 % Objektiva kvalitetsmått
 
@@ -149,6 +153,17 @@ imgDE = mean(mean(sqrt( (imgOUT(:,:,1) - img(:,:,1)).^2 + (imgOUT(:,:,2) - img(:
 disp(strcat('SSIM:', sprintf('%.6f',imgSSIM)));
 disp(strcat('SNR:', sprintf('%.6f',imgSNR)));
 disp(strcat('DELTA E:', sprintf('%.6f',imgDE)));
+
+% save all values to file
+if n == 1
+    save(strcat('recreated_noSSIM', fileName, '_values.txt'), 'imgSSIM', 'imgSNR', 'imgDE', '-ascii');
+    % type out the contect to show
+    type(strcat('recreated_noSSIM', fileName, '_values.txt'));
+else
+    save(strcat('recreated_', fileName, '_values.txt'), 'imgSSIM', 'imgSNR', 'imgDE', '-ascii');
+    % type out the contect to show
+    type(strcat('recreated_', fileName, '_values.txt'));
+end
 
 end
 
