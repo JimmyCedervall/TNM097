@@ -189,7 +189,6 @@ disp(strcat('DELTA E (scielab):', sprintf('%.4f',imgSCIELAB)));
 % calculating different Image Quality measures
 [MSE,PSNR,AD,SC,NK,MD,LMSE,NAE] = iq_measures(img,imgOUTtemp);
 
-% Mean Square Error: value close to 0 mean no error
 disp(strcat('MSE:', sprintf('%.4f',mean(MSE))));
 disp(strcat('PSNR:', sprintf('%.4f',mean(PSNR))));
 disp(strcat('AD:', sprintf('%.4f',mean(AD))));
