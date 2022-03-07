@@ -59,22 +59,27 @@ end
 
 meanSmallDB = zeros(3,size(smallDatabase,2));
 for i=1:size(smallDatabase,2)
-    matSmallImg = rgb2lab(cell2mat(smallDatabase(1,i)));    
-    
-    meanSmallDB(1,i) = mean(mean(matSmallImg(:,:,1)));
-    meanSmallDB(2,i) = mean(mean(matSmallImg(:,:,2)));
-    meanSmallDB(3,i) = mean(mean(matSmallImg(:,:,3)));
-    
-    
-    resized = imresize(cell2mat(smallDatabase(1,i)),[tinyImgSize tinyImgSize]);
-    smallDatabase(1,i) = mat2cell(resized,tinyImgSize);
+    [rows, columns, numberOfColorChannels] = sizcell2mat(smallDatabase(1,i));
+    if test > 1
+        matSmallImg = rgb2lab(cell2mat(smallDatabase(1,i)));    
+
+        meanSmallDB(1,i) = mean(mean(matSmallImg(:,:,1)));
+        meanSmallDB(2,i) = mean(mean(matSmallImg(:,:,2)));
+        meanSmallDB(3,i) = mean(mean(matSmallImg(:,:,3)));
+
+
+        resized = imresize(cell2mat(smallDatabase(1,i)),[tinyImgSize tinyImgSize]);
+        smallDatabase(1,i) = mat2cell(resized,tinyImgSize);
+    end
 end
 
-% for i=1:size(smallDatabase,2)
-%     imgTEMP = cell2mat(smallDatabase(1,i));
-%     nameOfFile=strcat(string(i),".jpg");
-%     path = strcat("databaseNew/",nameOfFile);
-%     imwrite(imgTEMP,path);    
-% end
+disp(strcat(strcat('Database has been created containing:', int2str(size(smallDatabase,2))),' images'));
+
+for i=1:size(smallDatabase,2)
+    imgTEMP = cell2mat(smallDatabase(1,i));
+    nameOfFile=strcat(string(i),".jpg");
+    path = strcat("databaseNew/",nameOfFile);
+    imwrite(imgTEMP,path);    
+end
 end
 
