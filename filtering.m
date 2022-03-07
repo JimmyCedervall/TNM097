@@ -1,9 +1,11 @@
+function [smallDatabase,meanSmallDB] = filtering(numberOfCluster,clusterSize,tinyImgSize)
 %https://www.mathworks.com/content/dam/mathworks/tag-team/Objects/c/88360_93001v00_Color-Based_Seg_K-Means_Clustering_2016.pdf
 
-addpath('databas2')
+addpath('databas')
 allSize = 7128;
 database = cell(1,allSize);
-numberOfCluster = 25;
+% numberOfCluster = 25;
+% clusterSize = 4;
 
 for i = 1:size(database,2)
     fileName = strcat(int2str(i),'.jpg');
@@ -41,19 +43,37 @@ for row = 1:allSize
         end
     end
 end
-tempDB = cell(1,4);
+tempDB = cell(1,clusterSize);
 for i = 1:numberOfCluster
-    tempDB = cellOfCluster(i,(1:4));
-    for j = 1:4
+    tempDB = cellOfCluster(i,(1:clusterSize));
+    for j = 1:clusterSize
         if (isempty(tempDB(1,j)))
             cellOfCluster(i:j) = database(1, randi([1 allSize]));
         end
     end
 end
 
-smallDatabase = cell(1,numberOfCluster*2);
+for i = 1:numberOfCluster
+    smallDatabase(1,(i-1)*clusterSize+1:(i-1)*clusterSize+clusterSize) = cellOfCluster(i,1:clusterSize);
+end
 
-smallDatabase(1,1:numberOfCluster) = cellOfCluster(:,1)';
-smallDatabase(1,numberOfCluster+1:numberOfCluster*2) = cellOfCluster(:,2)';
-smallDatabase(1,numberOfCluster*2+1:numberOfCluster*3) = cellOfCluster(:,3)';
-smallDatabase(1,numberOfCluster*3+1:numberOfCluster*4) = cellOfCluster(:,4)';
+meanSmallDB = zeros(3,size(smallDatabase,2));
+for i=1:size(smallDatabase,2)
+    matSmallImg = cell2mat(smallDatabase(1,i));
+    
+    meanSmallDB(1,i) = mean(mean(matSmallImg(:,:,1)));
+    meanSmallDB(2,i) = mean(mean(matSmallImg(:,:,2)));
+    meanSmallDB(3,i) = mean(mean(matSmallImg(:,:,3)));
+    
+    resized = imresize(matSmallImg,[tinyImgSize tinyImgSize]);
+    smallDatabase(1,i) = mat2cell(resized,tinyImgSize);
+end
+
+% for i=1:size(smallDatabase,2)
+%     imgTEMP = cell2mat(smallDatabase(1,i));
+%     nameOfFile=strcat(string(i),".jpg");
+%     path = strcat("databaseNew/",nameOfFile);
+%     imwrite(imgTEMP,path);    
+% end
+end
+
