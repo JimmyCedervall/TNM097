@@ -164,7 +164,7 @@ elapsedTime = elapsedTime / 60;
 disp(strcat('SSIM:', sprintf('%.6f',imgSSIM)));
 disp(strcat('SNR:', sprintf('%.6f',imgSNR)));
 disp(strcat('DELTA E:', sprintf('%.6f',imgDE)));
-disp(strcat('Elapsed time', elapsedTime));
+disp(strcat('Elapsed time', toc));
 
 end
 
