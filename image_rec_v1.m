@@ -127,7 +127,7 @@ for i = 1:size(img,1)/smallCellSize
         
     end
     % Give quick feedback for how long time is left aproximetly
-    if (size(img,1)/smallCellSize) * progress / 10  == i
+    if round((size(img,1)/smallCellSize) * progress / 10)  == i
         progress = progress + 1;
         disp(strcat('Image is processing...', int2str((progress - 1) * 10), '%'));
     end
