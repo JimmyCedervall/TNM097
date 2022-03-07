@@ -24,7 +24,7 @@ img = im2double(img);
 smallCellSize = 8;
 
 % number of optimal images from deltaE
-n = 5;
+n = 10;
 
 boolean = 0;
 
@@ -42,8 +42,7 @@ end
 
 if boolean == 1
     disp(strcat('Image dimensions are not divisible by '), int2str(smallCellSize));
-    disp(strcat('The size of the image has been changed to ', int2str(size(img))));
-    disp('Some information from the original image has therefor been lost');
+    disp(strcat('Therefor the size of the image has been changed to ', int2str(size()) ));
 end
 
 % rgb till lab
