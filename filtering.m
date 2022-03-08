@@ -9,8 +9,7 @@ database = cell(1,allSize);
 for i = 1:size(database,2)
     fileName = strcat(int2str(i),'.jpg');
     img = im2double(imread(fileName));
-    
-        database{i} = img;
+    database{i} = img;
 end
 
 %idx is which cluster each number belongs to
@@ -47,7 +46,11 @@ end
 %from cellOfCluster to smallDatabase
 for i = 1:numberOfCluster
     smallDatabase(1,(i-1)*clusterSize+1:(i-1)*clusterSize+clusterSize) = cellOfCluster(i,1:clusterSize);
-    extraDatabase(1,(i-1)*clusterSize+1:(i-1)*clusterSize+clusterSize) = cellOfCluster(i,clusterSize+1:clusterSize*2);
+    if size(cellOfCluster(i,:)) >= clusterSize*2
+        extraDatabase(1,(i-1)*clusterSize+1:(i-1)*clusterSize+clusterSize) = cellOfCluster(i,clusterSize+1:clusterSize*2);
+    else
+        extraDatabase(1,(i-1)*clusterSize+1:(i-1)*clusterSize+clusterSize) = cellOfCluster(i,clusterSize+1:size(cellOfCluster(i,:)));
+    end
 end
 
 %rezise images in smallDatabase
