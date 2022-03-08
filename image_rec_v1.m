@@ -1,4 +1,4 @@
-function [imgOUT, imgSSIM, imgSNR, imgDE] = image_rec_v1(fileName, database, meanDatabase, smallCellSize, n)
+function [imgOUT, imgSSIM, imgSNR, imgDE] = image_rec_v1(fileName, database, meanDatabase, smallCellSize, n, tinyImgSize)
 %
 % This function was created by:
 % Jimmy Cedervall Lamin (jimla401)
@@ -51,7 +51,7 @@ imgTiles = mat2tiles(img, [smallCellSize,smallCellSize]);
 
 % imgOUT scale factor.
 % Factor of 3 results in an output image of 3 times the size
-imgOUTscale = 3;
+imgOUTscale = tinyImgSize/smallCellSize;
 
 % final image matrix
 imgOUT = zeros(size(img,1)*imgOUTscale,size(img,2)*imgOUTscale,3);
@@ -176,13 +176,8 @@ imgDE = mean(mean(imgDE));
 imgXYZ = rgb2xyz(lab2rgb(img));
 imgOUTxyz = rgb2xyz(imgOUTtemp);
 whitePoint = [95.05 100 108.9];
-<<<<<<< HEAD
 sampDegree = 109 * 50 * 0.0175;
 SCIELAB = scielab(38, imgXYZ, imgOUTxyz, whitePoint, 'xyz');
-=======
-sampDegree = 72 * 50 * 0.0175;
-SCIELAB = scielab(sampDegree, imgXYZ, imgOUTxyz, whitePoint, 'xyz');
->>>>>>> parent of 668a48c (fixxed scale)
 imgSCIELAB = mean(mean(SCIELAB));
 
 % print information
