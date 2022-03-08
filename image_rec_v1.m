@@ -176,8 +176,13 @@ imgDE = mean(mean(imgDE));
 imgXYZ = rgb2xyz(lab2rgb(img));
 imgOUTxyz = rgb2xyz(imgOUTtemp);
 whitePoint = [95.05 100 108.9];
+<<<<<<< HEAD
 sampDegree = 109 * 50 * 0.0175;
 SCIELAB = scielab(38, imgXYZ, imgOUTxyz, whitePoint, 'xyz');
+=======
+sampDegree = 72 * 50 * 0.0175;
+SCIELAB = scielab(sampDegree, imgXYZ, imgOUTxyz, whitePoint, 'xyz');
+>>>>>>> parent of 668a48c (fixxed scale)
 imgSCIELAB = mean(mean(SCIELAB));
 
 % print information
