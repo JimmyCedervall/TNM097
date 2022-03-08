@@ -114,7 +114,7 @@ for i = 1:size(img,1)/smallCellSize
         for k = 1:size(bestMatches,2)
             %tinyRef = imresize(cell2mat(bestMatches(k)), [smallCellSize*imgOUTscale, smallCellSize*imgOUTscale]);
             tinyRef = cell2mat(bestMatches(k));
-            value = ssim(imresize(lab2rgb(imageMatrix), imgOUTscale), tinyRef);
+            value = ssim(imresize(rgb2gray(lab2rgb(imageMatrix)), imgOUTscale), rgb2gray(tinyRef));
                          
             % compare each match to find the best one
             if(value > ref)
@@ -156,7 +156,7 @@ elapsedTime = toc(timerVal);
 % else
 %     imwrite(imgOUT, strcat('final_', n, '_', fileName));
 % end
-imwrite(imgOUT, strcat('final_N', int2str(n), '_A', int2str(size(database,2)), fileName));
+imwrite(imgOUT, strcat('final_N', int2str(n), '_A', int2str(size(database,2)), '_C_', int2str(smallCellSize), fileName));
 
 %%%%%%%%% Objektiva kvalitetsmått
 imgOUTtemp = imgOUT;

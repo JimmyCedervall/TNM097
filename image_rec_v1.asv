@@ -1,4 +1,4 @@
-function [imgOUT, imgSSIM, imgSNR, imgDE] = image_rec_v1(fileName, database, meanDatabase, smallCellSize, n)
+function [imgOUT, imgSSIM, imgSNR, imgDE] = image_rec_v1(fileName, database, meanDatabase, smallCellSize, n, tinyImgSize)
 %
 % This function was created by:
 % Jimmy Cedervall Lamin (jimla401)
@@ -51,7 +51,7 @@ imgTiles = mat2tiles(img, [smallCellSize,smallCellSize]);
 
 % imgOUT scale factor.
 % Factor of 3 results in an output image of 3 times the size
-imgOUTscale = 3;
+imgOUTscale = tinyImgSize/smallCellSize;
 
 % final image matrix
 imgOUT = zeros(size(img,1)*imgOUTscale,size(img,2)*imgOUTscale,3);
@@ -156,16 +156,16 @@ elapsedTime = toc(timerVal);
 % else
 %     imwrite(imgOUT, strcat('final_', n, '_', fileName));
 % end
-imwrite(imgOUT, strcat('final_N', int2str(n), '_A', int2str(size(database,2)), fileName));
+imwrite(imgOUT, strcat('final_N', int2str(n), '_A', int2str(size(database,2)), '_C_', int2str(smallCellSize), fileName));
 
 %%%%%%%%% Objektiva kvalitetsmått
 imgOUTtemp = imgOUT;
 % SSIM
 imgOUTtemp = imresize(imgOUTtemp,[(size(img,1)) (size(img,2))]);
-imgSSIM = ssim(double(img), double(imgOUTtemp));
+imgSSIM = ssim(rgb2gray(lab2rgb(img)), rgb2gray(imgOUTtemp));
 
 % SNR
-imgSNR = mysnr(double(img), double(img) - double(imgOUTtemp));
+imgSNR = mysnr(rgb2gray(lab2rgb(img)), rgb2gray(lab2rgb(img)) - rgb2gray(imgOUTtemp));
 
 % DELTA E
 imgOUTde = rgb2lab(imgOUTtemp);
@@ -173,12 +173,12 @@ imgDE = sqrt((img(:,:,1) - imgOUTde(:,:,1)).^2 + (img(:,:,2) - imgOUTde(:,:,2)).
 imgDE = mean(mean(imgDE));
 
 % SCIELAB computation
-imgXYZ = rgb2xyz(img);
+imgXYZ = rgb2xyz(lab2rgb(img));
 imgOUTxyz = rgb2xyz(imgOUTtemp);
 whitePoint = [95.05 100 108.9];
-sampDegree = 72 * 30 * 0.0175;
-imgSCIELAB = scielab(sampDegree, imgXYZ, imgOUTxyz, whitePoint, 'xyz');
-imgSCIELAB = mean(mean(imgSCIELAB));
+sampDegree = 109 * 50 * 0.0175;
+SCIELAB = scielab(38, imgXYZ, imgOUTxyz, whitePoint, 'xyz');
+imgSCIELAB = mean(mean(SCIELAB));
 
 % print information
 disp(strcat('SSIM:', sprintf('%.4f',imgSSIM)));
@@ -187,16 +187,18 @@ disp(strcat('DELTA E:', sprintf('%.4f',imgDE)));
 disp(strcat('DELTA E (scielab):', sprintf('%.4f',imgSCIELAB)));
 
 % calculating different Image Quality measures
-[MSE,PSNR,AD,SC,NK,MD,LMSE,NAE] = iq_measures(img,imgOUTtemp);
+%[MSE,PSNR,AD,SC,NK,MD,LMSE,NAE] = iq_measures(img,imgOUTtemp);
 
-disp(strcat('MSE:', sprintf('%.4f',mean(MSE))));
-disp(strcat('PSNR:', sprintf('%.4f',mean(PSNR))));
-disp(strcat('AD:', sprintf('%.4f',mean(AD))));
-disp(strcat('SC:', sprintf('%.4f',mean(SC))));
-disp(strcat('NK,:', sprintf('%.4f',mean(NK))));
-disp(strcat('MD:', sprintf('%.4f',mean(MD))));
-disp(strcat('LMSE:', sprintf('%.4f',mean(LMSE))));
-disp(strcat('NAE:', sprintf('%.4f',mean(NAE))));
+
+% Mean Square Error: value close to 0 mean no error
+% disp(strcat('MSE:', sprintf('%.4f',mean(MSE))));
+% disp(strcat('PSNR:', sprintf('%.4f',mean(PSNR))));
+% disp(strcat('AD:', sprintf('%.4f',mean(AD))));
+% disp(strcat('SC:', sprintf('%.4f',mean(SC))));
+% disp(strcat('NK,:', sprintf('%.4f',mean(NK))));
+% disp(strcat('MD:', sprintf('%.4f',mean(MD))));
+% disp(strcat('LMSE:', sprintf('%.4f',mean(LMSE))));
+% disp(strcat('NAE:', sprintf('%.4f',mean(NAE))));
 
 if elapsedTime < 60
     disp(strcat(strcat('Elapsed time:', int2str(elapsedTime)), '-sec'));
