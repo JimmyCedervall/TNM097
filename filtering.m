@@ -20,8 +20,6 @@ for i = 1:allSize
     allChannels(1,i) = mean(mean(img(:, :, 1)));
     allChannels(2,i) = mean(mean(img(:, :, 2)));
     allChannels(3,i) = mean(mean(img(:, :, 3)));
-    
-    
 end
 X = allChannels';
 [idx,C] = kmeans(X,numberOfCluster);
@@ -48,15 +46,23 @@ end
 %from cellOfCluster to smallDatabase
 for i = 1:numberOfCluster
     smallDatabase(1,(i-1)*clusterSize+1:(i-1)*clusterSize+clusterSize) = cellOfCluster(i,1:clusterSize);
+    if size(cellOfCluster(i,:)) >= clusterSize*2
+        extraDatabase(1,(i-1)*clusterSize+1:(i-1)*clusterSize+clusterSize) = cellOfCluster(i,clusterSize+1:clusterSize*2);
+    else
+        extraDatabase(1,(i-1)*clusterSize+1:(i-1)*clusterSize+clusterSize) = cellOfCluster(i,clusterSize+1:size(cellOfCluster(i,:)));
+    end
 end
 
 %rezise images in smallDatabase
 for i=1:size(smallDatabase,2)
-    test=cell2mat(smallDatabase(1,i));
-    [a,b,c] = size(test);
+    workingImg=cell2mat(smallDatabase(1,i));
+    [a,b,c] = size(workingImg);
     if c > 2  
         resized = imresize(cell2mat(smallDatabase(1,i)),[tinyImgSize tinyImgSize]);
         smallDatabase(1,i) = mat2cell(resized,tinyImgSize); 
+    else
+        resized = imresize(cell2mat(extraDatabase(1,i)),[tinyImgSize tinyImgSize]);
+        smallDatabase(1,i) = mat2cell(resized,tinyImgSize);
     end
 end
 
