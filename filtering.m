@@ -73,9 +73,6 @@ for i=1:size(smallDatabase,2)
     if size(cell2mat(smallDatabase(1,i)),3) > 2  
         resized = imresize(cell2mat(smallDatabase(1,i)),[tinyImgSize tinyImgSize]);
         smallDatabase(1,i) = mat2cell(resized,tinyImgSize); 
-    else
-        resized = imresize(cell2mat(extraDatabase(1,i)),[tinyImgSize tinyImgSize]);
-        smallDatabase(1,i) = mat2cell(resized,tinyImgSize);
     end
 end
 
