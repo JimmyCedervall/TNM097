@@ -162,7 +162,7 @@ imwrite(imgOUT, strcat('final_N', int2str(n), '_A', int2str(size(database,2)), f
 imgOUTtemp = imgOUT;
 % SSIM
 imgOUTtemp = imresize(imgOUTtemp,[(size(img,1)) (size(img,2))]);
-imgSSIM = ssim(double(img), double(imgOUTtemp));
+imgSSIM = ssim(rgb2gray(lab2rgb(img)), rgb2gray(imgOUTtemp));
 
 % SNR
 imgSNR = mysnr(double(img), double(img) - double(imgOUTtemp));
@@ -176,8 +176,8 @@ imgDE = mean(mean(imgDE));
 imgXYZ = rgb2xyz(lab2rgb(img));
 imgOUTxyz = rgb2xyz(imgOUTtemp);
 whitePoint = [95.05 100 108.9];
-sampDegree = 72 * 50 * 0.0175;
-SCIELAB = scielab(sampDegree, imgXYZ, imgOUTxyz, whitePoint, 'xyz');
+sampDegree = 109 * 50 * 0.0175;
+SCIELAB = scielab(38, imgXYZ, imgOUTxyz, whitePoint, 'xyz');
 imgSCIELAB = mean(mean(SCIELAB));
 
 % print information
