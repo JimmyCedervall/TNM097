@@ -156,7 +156,7 @@ elapsedTime = toc(timerVal);
 % else
 %     imwrite(imgOUT, strcat('final_', n, '_', fileName));
 % end
-imwrite(imgOUT, strcat('final_N', int2str(n), '_A', int2str(size(database,2)), '_C_', int2str(smallCellSize), fileName));
+imwrite(imgOUT, strcat('images/final_N', int2str(n), '_A', int2str(size(database,2)), '_C_', int2str(smallCellSize), fileName));
 
 %%%%%%%%% Objektiva kvalitetsmått
 imgOUTtemp = imgOUT;
