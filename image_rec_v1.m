@@ -173,12 +173,12 @@ imgDE = sqrt((img(:,:,1) - imgOUTde(:,:,1)).^2 + (img(:,:,2) - imgOUTde(:,:,2)).
 imgDE = mean(mean(imgDE));
 
 % SCIELAB computation
-imgXYZ = rgb2xyz(img);
+imgXYZ = rgb2xyz(lab2rgb(img));
 imgOUTxyz = rgb2xyz(imgOUTtemp);
 whitePoint = [95.05 100 108.9];
-sampDegree = 72 * 30 * 0.0175;
-imgSCIELAB = scielab(sampDegree, imgXYZ, imgOUTxyz, whitePoint, 'xyz');
-imgSCIELAB = mean(mean(imgSCIELAB));
+sampDegree = 72 * 50 * 0.0175;
+SCIELAB = scielab(sampDegree, imgXYZ, imgOUTxyz, whitePoint, 'xyz');
+imgSCIELAB = mean(mean(SCIELAB));
 
 % print information
 disp(strcat('SSIM:', sprintf('%.4f',imgSSIM)));
@@ -187,17 +187,18 @@ disp(strcat('DELTA E:', sprintf('%.4f',imgDE)));
 disp(strcat('DELTA E (scielab):', sprintf('%.4f',imgSCIELAB)));
 
 % calculating different Image Quality measures
-[MSE,PSNR,AD,SC,NK,MD,LMSE,NAE] = iq_measures(img,imgOUTtemp);
+%[MSE,PSNR,AD,SC,NK,MD,LMSE,NAE] = iq_measures(img,imgOUTtemp);
+
 
 % Mean Square Error: value close to 0 mean no error
-disp(strcat('MSE:', sprintf('%.4f',mean(MSE))));
-disp(strcat('PSNR:', sprintf('%.4f',mean(PSNR))));
-disp(strcat('AD:', sprintf('%.4f',mean(AD))));
-disp(strcat('SC:', sprintf('%.4f',mean(SC))));
-disp(strcat('NK,:', sprintf('%.4f',mean(NK))));
-disp(strcat('MD:', sprintf('%.4f',mean(MD))));
-disp(strcat('LMSE:', sprintf('%.4f',mean(LMSE))));
-disp(strcat('NAE:', sprintf('%.4f',mean(NAE))));
+% disp(strcat('MSE:', sprintf('%.4f',mean(MSE))));
+% disp(strcat('PSNR:', sprintf('%.4f',mean(PSNR))));
+% disp(strcat('AD:', sprintf('%.4f',mean(AD))));
+% disp(strcat('SC:', sprintf('%.4f',mean(SC))));
+% disp(strcat('NK,:', sprintf('%.4f',mean(NK))));
+% disp(strcat('MD:', sprintf('%.4f',mean(MD))));
+% disp(strcat('LMSE:', sprintf('%.4f',mean(LMSE))));
+% disp(strcat('NAE:', sprintf('%.4f',mean(NAE))));
 
 if elapsedTime < 60
     disp(strcat(strcat('Elapsed time:', int2str(elapsedTime)), '-sec'));
