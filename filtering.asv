@@ -17,6 +17,8 @@ database = database(~cellfun('isempty',database));
 %idx is which cluster each number belongs to
 allChannels = zeros(3,allSize);
 for i = 1:allSize
+%     fileName = strcat(int2str(i),'.jpg');
+%     img = im2double(imread(fileName));
     img = cell2mat(database(1,i));
     if size(img,3) > 2
     allChannels(1,i) = mean(mean(img(:, :, 1)));
@@ -30,33 +32,17 @@ X = allChannels';
 % plot 3D clusters
 scatter3(X(:,1),X(:,2),X(:,3),15,idx,'filled')
 
-most = mode(idx');
-amountMost=0;
-for i=1:size(idx,1)
-    if idx(i,1) == most
-        amountMost = amountMost+1;
-    end
-end
 % go through all clusters in 'idx' 
-cellOfCluster = cell(numberOfCluster, amountMost);
+cellOfCluster = cell(numberOfCluster, allSize);
 
-% % Yttre loopen går igenom alla siffror 1 till allSize
-% for row = 1:amountMost
-%     % Inre loopen ska gå igenom alla idx värden för att hitta match
-%     for col = 1:numberOfCluster
-%         % idx(i,1) borde vara "gruppvärdet" som dess 'id' tillhör
-%         if idx(col,1) == row
-%             cellOfCluster(row,col) = database(1,col);
-%         end
-%     end
-% end
-
-for row = 1:amountMost
+% Yttre loopen går igenom alla siffror 1 till allSize
+for row = 1:allSize
     col = 1;
     % Inre loopen ska gå igenom alla idx värden för att hitta match
     for i = 1:allSize
+        imgTemp = (cell2mat(database(1,i));
         % idx(i,1) borde vara "gruppvärdet" som dess 'id' tillhör
-        if idx(i,1) == row
+        if idx(i,1) == row && size(imgTemp),3) > 2
             cellOfCluster(row,col) = database(1,i);
             col = col + 1;
         end
@@ -70,7 +56,9 @@ end
 
 %rezise images in smallDatabase
 for i=1:size(smallDatabase,2)
-    if size(cell2mat(smallDatabase(1,i)),3) > 2  
+    workingImg=cell2mat(smallDatabase(1,i));
+    [a,b,c] = size(workingImg);
+    if c > 2  
         resized = imresize(cell2mat(smallDatabase(1,i)),[tinyImgSize tinyImgSize]);
         smallDatabase(1,i) = mat2cell(resized,tinyImgSize); 
     else
