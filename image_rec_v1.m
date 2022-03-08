@@ -165,7 +165,7 @@ imgOUTtemp = imresize(imgOUTtemp,[(size(img,1)) (size(img,2))]);
 imgSSIM = ssim(rgb2gray(lab2rgb(img)), rgb2gray(imgOUTtemp));
 
 % SNR
-imgSNR = mysnr(double(img), double(img) - double(imgOUTtemp));
+imgSNR = mysnr(rgb2gray(lab2rgb(img)), rgb2gray(lab2rgb(img)) - rgb2gray(imgOUTtemp));
 
 % DELTA E
 imgOUTde = rgb2lab(imgOUTtemp);
