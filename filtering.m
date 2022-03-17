@@ -1,4 +1,5 @@
 function [smallDatabase,meanSmallDB] = filtering(numberOfCluster,clusterSize,tinyImgSize)
+<<<<<<< Updated upstream
 %link to database: https://www.kaggle.com/theblackmamba31/landscape-image-colorization
 
 % This function was created by:
@@ -15,6 +16,9 @@ function [smallDatabase,meanSmallDB] = filtering(numberOfCluster,clusterSize,tin
 % * Three outputs are generated:
 % * smallDatabase is the filtered database
 % * meanSmallDB is all the mean values of images in smallDatabase
+=======
+%https://www.mathworks.com/content/dam/mathworks/tag-team/Objects/c/88360_93001v00_Color-Based_Seg_K-Means_Clustering_2016.pdf
+>>>>>>> Stashed changes
 
 addpath('databas')
 allSize = 7128;

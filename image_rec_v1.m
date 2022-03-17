@@ -1,4 +1,4 @@
-function [imgOUT, imgSSIM, imgSNR, imgDE] = image_rec_v1(fileName, database, meanDatabase, smallCellSize, n, tinyImgSize)
+function [imgOUT, imgSSIM, imgSNR, imgDE, imgSCIELAB] = image_rec_v1(fileName, database, meanDatabase, smallCellSize, n, tinyImgSize)
 %
 % This function was created by:
 % Jimmy Cedervall Lamin (jimla401)
@@ -9,24 +9,19 @@ function [imgOUT, imgSSIM, imgSNR, imgDE] = image_rec_v1(fileName, database, mea
 % * The function takes in an image (must be an image with 3 RGB channels)
 % * The size of the image does not matter
 
-% * Three outputs are generated:
+% * Four outputs are generated:
 % * imgOUT is the recreated image using small images from a database
 % * imgSSIM is the SSIM value when comparing imgOUT with img
+% * imgSNR is the SNR value of the image compared to input img
 % * imgDE is the delta E value between imgOUT and img
+% * imgSCIELAB is the S-CIELAB delta E value
 
 % Make image double
 img = im2double(imread(fileName));
-% the size of the sectioning of the image, prefferable of size 8 but is
-% interchangable
-%smallCellSize = 128;
-
-% number of optimal images from deltaE
-%n = 2;
 
 boolean = 0;
 
-% Check dimensions of matrix and resize if needed to make it divideable by
-% '8' or smallCellSize
+% Check dimensions of matrix and resize if needed to make it divideable by smallCellSize
 if mod(size(img,1), smallCellSize) ~= 0
     img = imresize(img, [smallCellSize * ceil(size(img,1) / smallCellSize), size(img,2)]);
     boolean = 1;
@@ -76,14 +71,7 @@ for i = 1:size(img,1)/smallCellSize
         % Matrix for holding all deltaE values
         dE = zeros(1,size(database,2));
         for k = 1:size(database,2)
-            % Temporary image created from database
-            %imgTEMP = cell2mat(database(k));
-            %imgTEMP = imresize(imgTEMP,[smallCellSize,smallCellSize]);
-            %imgTEMP = rgb2lab(imgTEMP);
-                     
-            % calculating delta E values for all images
-            %dE(1,k) = mean(mean(sqrt( (imgTEMP(:,:,1) - imageMatrix(:,:,1)).^2 + (imgTEMP(:,:,2) - imageMatrix(:,:,2)).^2 + (imgTEMP(:,:,3) - imageMatrix(:,:,3)).^2)));
-
+            % Compute delta E with Lab values
             L = (meanDatabase(1,k) - mean(mean(imageMatrix(:,:,1))))^2;
             A = (meanDatabase(2,k) - mean(mean(imageMatrix(:,:,2))))^2;
             B = (meanDatabase(3,k) - mean(mean(imageMatrix(:,:,3))))^2;
@@ -156,7 +144,7 @@ elapsedTime = toc(timerVal);
 % else
 %     imwrite(imgOUT, strcat('final_', n, '_', fileName));
 % end
-imwrite(imgOUT, strcat('images/final_N', int2str(n), '_A', int2str(size(database,2)), '_C_', int2str(smallCellSize), fileName));
+imwrite(imgOUT, strcat('final_N', int2str(n), '_A', int2str(size(database,2)), '_C_', int2str(smallCellSize), fileName));
 
 %%%%%%%%% Objektiva kvalitetsmått
 imgOUTtemp = imgOUT;
@@ -177,6 +165,7 @@ imgXYZ = rgb2xyz(lab2rgb(img));
 imgOUTxyz = rgb2xyz(imgOUTtemp);
 whitePoint = [95.05 100 108.9];
 sampDegree = 109 * 50 * 0.0175;
+% computed value for our setup = 38
 SCIELAB = scielab(38, imgXYZ, imgOUTxyz, whitePoint, 'xyz');
 imgSCIELAB = mean(mean(SCIELAB));
 
@@ -185,20 +174,6 @@ disp(strcat('SSIM:', sprintf('%.4f',imgSSIM)));
 disp(strcat('SNR:', sprintf('%.4f',imgSNR)));
 disp(strcat('DELTA E:', sprintf('%.4f',imgDE)));
 disp(strcat('DELTA E (scielab):', sprintf('%.4f',imgSCIELAB)));
-
-% calculating different Image Quality measures
-%[MSE,PSNR,AD,SC,NK,MD,LMSE,NAE] = iq_measures(img,imgOUTtemp);
-
-
-% Mean Square Error: value close to 0 mean no error
-% disp(strcat('MSE:', sprintf('%.4f',mean(MSE))));
-% disp(strcat('PSNR:', sprintf('%.4f',mean(PSNR))));
-% disp(strcat('AD:', sprintf('%.4f',mean(AD))));
-% disp(strcat('SC:', sprintf('%.4f',mean(SC))));
-% disp(strcat('NK,:', sprintf('%.4f',mean(NK))));
-% disp(strcat('MD:', sprintf('%.4f',mean(MD))));
-% disp(strcat('LMSE:', sprintf('%.4f',mean(LMSE))));
-% disp(strcat('NAE:', sprintf('%.4f',mean(NAE))));
 
 if elapsedTime < 60
     disp(strcat(strcat('Elapsed time:', int2str(elapsedTime)), '-sec'));
