@@ -1,4 +1,4 @@
-function [smallDatabase,meanSmallDB] = filtering(numberOfCluster,clusterSize,tinyImgSize)
+function [smallDatabase,meanSmallDB,cellOfCluster] = filtering(numberOfCluster,clusterSize,tinyImgSize)
 %https://www.mathworks.com/content/dam/mathworks/tag-team/Objects/c/88360_93001v00_Color-Based_Seg_K-Means_Clustering_2016.pdf
 
 addpath('databas')
@@ -9,20 +9,15 @@ database = cell(1,allSize);
 for i = 1:size(database,2)
     fileName = strcat(int2str(i),'.jpg');
     img = im2double(imread(fileName));
-    if size(img,3) > 2
-        database{i} = img;
-    end
+    database{i} = img;
 end
-database = database(~cellfun('isempty',database));
 %idx is which cluster each number belongs to
 allChannels = zeros(3,allSize);
 for i = 1:allSize
     img = cell2mat(database(1,i));
-    if size(img,3) > 2
     allChannels(1,i) = mean(mean(img(:, :, 1)));
     allChannels(2,i) = mean(mean(img(:, :, 2)));
     allChannels(3,i) = mean(mean(img(:, :, 3)));
-    end
 end
 X = allChannels';
 [idx,C] = kmeans(X,numberOfCluster);
@@ -30,6 +25,7 @@ X = allChannels';
 % plot 3D clusters
 scatter3(X(:,1),X(:,2),X(:,3),15,idx,'filled')
 
+%hitta hur stor smalldatabase ska vara
 most = mode(idx');
 amountMost=0;
 for i=1:size(idx,1)
@@ -39,17 +35,6 @@ for i=1:size(idx,1)
 end
 % go through all clusters in 'idx' 
 cellOfCluster = cell(numberOfCluster, amountMost);
-
-% % Yttre loopen går igenom alla siffror 1 till allSize
-% for row = 1:amountMost
-%     % Inre loopen ska gå igenom alla idx värden för att hitta match
-%     for col = 1:numberOfCluster
-%         % idx(i,1) borde vara "gruppvärdet" som dess 'id' tillhör
-%         if idx(col,1) == row
-%             cellOfCluster(row,col) = database(1,col);
-%         end
-%     end
-% end
 
 for row = 1:amountMost
     col = 1;
@@ -67,7 +52,6 @@ end
 for i = 1:numberOfCluster
     smallDatabase(1,(i-1)*clusterSize+1:(i-1)*clusterSize+clusterSize) = cellOfCluster(i,1:clusterSize);
 end
-
 %rezise images in smallDatabase
 for i=1:size(smallDatabase,2)
     if size(cell2mat(smallDatabase(1,i)),3) > 2  
