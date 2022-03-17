@@ -1,5 +1,5 @@
 function [smallDatabase,meanSmallDB] = filtering(numberOfCluster,clusterSize,tinyImgSize)
-%https://www.mathworks.com/content/dam/mathworks/tag-team/Objects/c/88360_93001v00_Color-Based_Seg_K-Means_Clustering_2016.pdf
+%link to database: https://www.kaggle.com/theblackmamba31/landscape-image-colorization
 
 % This function was created by:
 % Jimmy Cedervall Lamin (jimla401)
