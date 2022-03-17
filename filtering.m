@@ -1,5 +1,20 @@
-function [smallDatabase,meanSmallDB,cellOfCluster] = filtering(numberOfCluster,clusterSize,tinyImgSize)
+function [smallDatabase,meanSmallDB] = filtering(numberOfCluster,clusterSize,tinyImgSize)
 %https://www.mathworks.com/content/dam/mathworks/tag-team/Objects/c/88360_93001v00_Color-Based_Seg_K-Means_Clustering_2016.pdf
+
+% This function was created by:
+% Jimmy Cedervall Lamin (jimla401)
+% Edvin Nordin (edvno177)
+% Carl Melin (carme007)
+% 
+%
+% * The function takes in three inputs
+% * numberOfCluster is the amount of clusters
+% * clusterSize is the amount of images taken from each cluster
+% * tinyImgSize is how big the resize images should be
+
+% * Three outputs are generated:
+% * smallDatabase is the filtered database
+% * meanSmallDB is all the mean values of images in smallDatabase
 
 addpath('databas')
 allSize = 7128;
@@ -73,12 +88,15 @@ for i=1:size(smallDatabase,2)
     meanSmallDB(3,i) = mean(mean(matSmallImg(:,:,3)));
 end
 
+%removes empty values
 disp(strcat(strcat('Database has been created containing:', int2str(size(smallDatabase,2))),' images'));
 
+
+%uncomment if you want to se all images in the smalldatabase
 % for i=1:size(smallDatabase,2)
 %     imgTEMP = cell2mat(smallDatabase(1,i));
 %     nameOfFile=strcat(string(i),".jpg");
-%     path = strcat("databaseNew/",nameOfFile);
+%     path = strcat("folderName/",nameOfFile);
 %     imwrite(imgTEMP,path);    
 % end
 end
